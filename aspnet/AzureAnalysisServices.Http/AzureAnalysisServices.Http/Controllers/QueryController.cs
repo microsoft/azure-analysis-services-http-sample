@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Net.Http.Headers;
 using System.Threading;
+using System.Reflection;
 
 namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
 {
@@ -27,6 +28,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
        // [Route("query")]
         public async Task<HttpResponseMessage> Run(CancellationToken cancel)
         {
+
             var log = Configuration.Services.GetTraceWriter();
             HttpRequestMessage req = Request;
             log.Info(req,"Query","Request Begin request.");
@@ -59,6 +61,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
             
             var server = ConfigurationManager.AppSettings["Server"];
             var database = ConfigurationManager.AppSettings["Database"];
+            var tenantId = ConfigurationManager.AppSettings["TenantID"];      
 
             if (string.IsNullOrEmpty(server))
             {
@@ -72,7 +75,29 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
             string constr;
             if (authData.Scheme == AuthScheme.BASIC)
             {
-                constr = $"Data Source={server};User Id={authData.UPN};Password={authData.PasswordOrToken};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
+                var parts = authData.UPN.Split('@');
+
+                if (Guid.TryParse(authData.UPN, out _)) //assume it's a clientId and password is a ClientSecret, and add the tenantId from web.config to fetch a token
+                {
+                    var token = await TokenHelper.GetBearerTokenAsync(authData.UPN, authData.PasswordOrToken, tenantId);
+                    constr = $"Data Source={server};Password={token};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
+                }
+                else
+                {
+                    //clientid@tenantid
+                    if(parts.Length == 2 && Guid.TryParse(parts[0], out _) && Guid.TryParse(parts[1], out _))
+                    {
+                        var token = await TokenHelper.GetBearerTokenAsync(parts[0], authData.PasswordOrToken, parts[1]);
+                        constr = $"Data Source={server};Password={token};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
+
+                    }
+                    else  //let adodb.net try to auth with th UPN/Password
+                    {
+                        constr = $"Data Source={server};User Id={authData.UPN};Password={authData.PasswordOrToken};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
+                    }
+                    
+                }
+                
             }
             else if (authData.Scheme == AuthScheme.BEARER)
             {
@@ -104,7 +129,22 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
                 query = await req.Content.ReadAsStringAsync();
             }
 
-            var con = ConnectionPool.Instance.GetConnection(constr, authData);
+            ConnectionPoolEntry con;
+            try
+            {
+                con = ConnectionPool.Instance.GetConnection(constr, authData);
+            }
+            catch (Exception ex)
+            {
+                if (ex is TargetInvocationException tex)
+                {
+                    ex = tex.InnerException;
+                }
+                var msg = ex.Message;
+
+                return req.CreateErrorResponse(HttpStatusCode.InternalServerError, msg, ex);
+            }
+            
 
             var cmd = con.Connection.CreateCommand();
             cmd.CommandText = query;

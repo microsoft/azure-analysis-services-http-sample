@@ -6,7 +6,7 @@ namespace Tester
     {
         public string Host { get; set; }
         public int HttpPort { get; set; } = 80;
-        public int HttpsPort { get; set; } = 443;
+        public int HttpsPort { get; set; } = 44339;
         public string Path { get; set; } = "/api/Query";
         public string Query { get; set; }
         public bool GZip { get; set; } = true;
@@ -15,7 +15,7 @@ namespace Tester
         public string AuthScheme { get; set; } = "bearer";
         public bool UseHttps { get; set; } = true;
 
-        public string RequestUri => $"{(UseHttps ? "https://" : "http://")}{Host}:{(UseHttps ? HttpsPort : HttpPort)}/{Path}";
+        public string RequestUri => $"{(UseHttps ? "https://" : "http://")}{Host}:{(UseHttps ? HttpsPort : HttpPort)}{Path}";
         
         public HttpStatusCode ExpectedResponse { get; set; } =  HttpStatusCode.OK;
 

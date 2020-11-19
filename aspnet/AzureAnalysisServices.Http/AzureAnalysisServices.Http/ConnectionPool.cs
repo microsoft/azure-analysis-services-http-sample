@@ -78,7 +78,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http
         public ConnectionPoolEntry GetConnection(string connectionString, AuthData authData)
         {
             var key = connectionString;
-
+            
             ConnectionPoolEntry rv = null;
             avalableConnections.AddOrUpdate(key, k => new ConcurrentStack<ConnectionPoolEntry>(), (k, c) =>
             {

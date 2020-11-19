@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -25,26 +24,15 @@ namespace Tester
             var host = ConfigurationManager.AppSettings["Host"];
             var httpPort = int.Parse(ConfigurationManager.AppSettings["HttpPort"]);
             var httpsPort = int.Parse(ConfigurationManager.AppSettings["HttpsPort"]);
-            string userName = ConfigurationManager.AppSettings["UserName"];
+            string clientId = ConfigurationManager.AppSettings["ClientID"];
+            string clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
+            string tenantId = ConfigurationManager.AppSettings["TenantID"];
+            string query = ConfigurationManager.AppSettings["Query"];
 
-            var q = @"
-EVALUATE
-  TOPN(
-    1001,
-    SUMMARIZECOLUMNS('Product'[Name], ""SumListPrice"", CALCULATE(SUM('Product'[ListPrice]))),
-    [SumListPrice],
-    0,
-    'Product'[Name],
-    1
-  )
-
-ORDER BY
-  [SumListPrice] DESC, 'Product'[Name]
-";
 
             var tests = new List<Test>() {
-                new Test() { Host = host, HttpPort = httpPort, HttpsPort = httpsPort, Query = q, GZip = true },
-                new Test() { Host = host, HttpPort = httpPort, HttpsPort = httpsPort, Query = q, GZip = false } };
+                new Test() { Host = host, HttpPort = httpPort, HttpsPort = httpsPort, Query = query, GZip = true },
+                new Test() { Host = host, HttpPort = httpPort, HttpsPort = httpsPort, Query = query, GZip = false } };
 
             var basicHttpsTest = tests.First().Clone();
             basicHttpsTest.AuthScheme = "basic";
@@ -66,30 +54,11 @@ ORDER BY
             noneTest.ExpectedResponse =  HttpStatusCode.Unauthorized;
             tests.Add(noneTest);
 
-            
-
-            Console.Write($"Enter password for {userName}: ");
-            string password = "";
-            while (true)
-            {
-                var key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.Enter)
-                {
-                    break;
-                }
-                password += key.KeyChar;
-                Console.Write("*");
-            }
-
-
-
-
-            string token = GetBearerToken(userName,password).Result;
-
+            string token = GetBearerTokenAsync(clientId,clientSecret, tenantId).Result;
 
             while (true)
             {
-                RunTests(tests, token, userName,password);
+                RunTests(tests, token, clientId, clientSecret);
 
                 Console.WriteLine("Hit 'q' to exit or any other key to rerun tests.");
                 var k = Console.ReadKey();
@@ -186,7 +155,7 @@ ORDER BY
                 
                 ms.Position = 0;
                 var bytes = ms.ToArray();
-                Console.WriteLine($"Body Length {ms.Length}: Starts [{Encoding.UTF8.GetString(bytes,0,Math.Min(200,bytes.Length))} . . .]");
+                Console.WriteLine($"Body Length {ms.Length}: Starts [{Encoding.UTF8.GetString(bytes,0,Math.Min(1000,bytes.Length))} . . .]");
 
                 if (resp.StatusCode == test.ExpectedResponse)
                 {
@@ -217,17 +186,17 @@ ORDER BY
         }
 
 
-        static async Task<string> GetBearerToken(string user, string pwd)
+        static async Task<string> GetBearerTokenAsync(string clientId, string clientSecret, string tenantId)
         {
             var redirectUri = new Uri("urn:ietf:wg:oauth:2.0:oob");
             var resourceId = "https://*.asazure.windows.net";
-            var authority = "https://login.windows.net/common";
-            var clientId = "cf710c6e-dfcc-4fa8-a093-d47294e44c66";
+            var authority = $"https://login.microsoftonline.com/{tenantId}";
+            // var clientId = "cf710c6e-dfcc-4fa8-a093-d47294e44c66";
 
 
 
             var ctx = new AuthenticationContext(authority);
-            var token = await ctx.AcquireTokenAsync(resourceId, clientId, new UserPasswordCredential(user, pwd));
+            var token = await ctx.AcquireTokenAsync(resourceId, new ClientCredential(clientId,clientSecret));
 
             return token.AccessToken;
         }
