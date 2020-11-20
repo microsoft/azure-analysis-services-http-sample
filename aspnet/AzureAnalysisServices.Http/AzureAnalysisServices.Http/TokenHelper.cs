@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -19,6 +20,18 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http
             //var validDuration = token.ValidTo.Subtract(DateTime.UtcNow);
             //log.Info($"bearer token recievied for {upn} valid for {(int)validDuration.TotalMinutes}min {((int)validDuration.TotalSeconds) % 60}sec");
             return token;
+        }
+
+        internal static async Task<string> GetBearerTokenAsync(string clientId, string clientSecret, string tenantId)
+        {
+            var resourceId = "https://*.asazure.windows.net";
+            var authority = $"https://login.microsoftonline.com/{tenantId}";
+            // var clientId = "cf710c6e-dfcc-4fa8-a093-d47294e44c66";
+
+            var ctx = new AuthenticationContext(authority);
+            var token = await ctx.AcquireTokenAsync(resourceId, new ClientCredential(clientId, clientSecret));
+
+            return token.AccessToken;
         }
     }
 }

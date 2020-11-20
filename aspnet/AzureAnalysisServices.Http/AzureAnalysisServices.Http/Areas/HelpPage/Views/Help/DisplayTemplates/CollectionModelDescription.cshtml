@@ -1,0 +1,6 @@
+@using Microsoft.Samples.AzureAnalysisServices.Http.Areas.HelpPage.ModelDescriptions
+@model CollectionModelDescription
+@if (Model.ElementDescription is ComplexTypeModelDescription)
+{
+    @Html.DisplayFor(m => m.ElementDescription)
+}

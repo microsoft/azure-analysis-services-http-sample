@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 
 namespace Microsoft.Samples.AzureAnalysisServices.Http
@@ -19,13 +20,13 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http
                 Scheme = AuthScheme.NONE;
                 return;
             }
-            else if (req.Headers.Authorization.Scheme == "bearer")
+            else if (req.Headers.Authorization.Scheme.Equals("bearer",StringComparison.OrdinalIgnoreCase))
             {
                 Scheme = AuthScheme.BEARER;
                 PasswordOrToken = req.Headers.Authorization.Parameter;
                 return;
             }
-            else if (req.Headers.Authorization.Scheme == "basic")
+            else if (req.Headers.Authorization.Scheme.Equals("basic",StringComparison.OrdinalIgnoreCase))
             {
                 var auth = req.Headers.Authorization.Parameter;
                 var authString = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(auth));

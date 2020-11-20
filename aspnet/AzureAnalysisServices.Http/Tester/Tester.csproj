@@ -58,6 +58,7 @@
     <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AppSettings.Secrets.user" />
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
