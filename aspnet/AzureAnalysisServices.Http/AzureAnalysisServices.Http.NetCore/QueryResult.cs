@@ -83,7 +83,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.NetCore
             }
             finally
             {
-                encodingStream.Dispose();
+                await encodingStream.DisposeAsync();
             }
 
         }
@@ -101,16 +101,19 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.NetCore
 
 
             using var rdr = results;
-            using var tw = new StreamWriter(stream, encoding, 1024 * 4, true);
-            using var w = new Newtonsoft.Json.JsonTextWriter(tw);
 
+            //can't call Dispose on these without syncronous IO on the underlying connection
+            var tw = new StreamWriter(stream, encoding, 1024 * 4, true);
+            var w = new Newtonsoft.Json.JsonTextWriter(tw);
+
+ 
             int rows = 0;
             await w.WriteStartObjectAsync(cancel);
             var rn = "rows";
 
             await w.WritePropertyNameAsync(rn);
             await w.WriteStartArrayAsync(cancel);
-                    
+
             while (rdr.Read())
             {
                 rows++;
@@ -134,6 +137,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.NetCore
             await tw.FlushAsync();
             await stream.FlushAsync();
 
+            
 
         }
     }
