@@ -31,7 +31,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
 
             var log = Configuration.Services.GetTraceWriter();
             HttpRequestMessage req = Request;
-            log.Info(req,"Query","Request Begin request.");
+            log.Info(req, "Query", "Request Begin request.");
 
             //don't support duplicates of query string parameters
             var queryString = req.GetQueryNameValuePairs().ToDictionary(p => p.Key, p => p.Value);
@@ -58,10 +58,10 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
             }
 
 
-            
+
             var server = ConfigurationManager.AppSettings["Server"];
             var database = ConfigurationManager.AppSettings["Database"];
-            var tenantId = ConfigurationManager.AppSettings["TenantID"];      
+            var tenantId = ConfigurationManager.AppSettings["TenantID"];
 
             if (string.IsNullOrEmpty(server))
             {
@@ -72,41 +72,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
                 throw new InvalidOperationException("Required AppSettings Database is missing.");
             }
 
-            string constr;
-            if (authData.Scheme == AuthScheme.BASIC)
-            {
-                var parts = authData.UPN.Split('@');
-
-                if (Guid.TryParse(authData.UPN, out _)) //assume it's a clientId and password is a ClientSecret, and add the tenantId from web.config to fetch a token
-                {
-                    var token = await TokenHelper.GetBearerTokenAsync(authData.UPN, authData.PasswordOrToken, tenantId);
-                    constr = $"Data Source={server};Password={token};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
-                }
-                else
-                {
-                    //clientid@tenantid
-                    if(parts.Length == 2 && Guid.TryParse(parts[0], out _) && Guid.TryParse(parts[1], out _))
-                    {
-                        var token = await TokenHelper.GetBearerTokenAsync(parts[0], authData.PasswordOrToken, parts[1]);
-                        constr = $"Data Source={server};Password={token};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
-
-                    }
-                    else  //let adodb.net try to auth with th UPN/Password
-                    {
-                        constr = $"Data Source={server};User Id={authData.UPN};Password={authData.PasswordOrToken};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
-                    }
-                    
-                }
-                
-            }
-            else if (authData.Scheme == AuthScheme.BEARER)
-            {
-                constr = $"Data Source={server};Password={authData.PasswordOrToken};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
-            }
-            else
-            {
-                throw new InvalidOperationException($"unexpected state authData.Scheme={authData.Scheme}");
-            }
+            string constr = await ConnectionPool.GetConnectionString(authData, server, database, tenantId);
 
             //get gzip setting
             bool gzip = queryString.ContainsKey("gzip") ? bool.Parse(queryString["gzip"]) : true;
@@ -144,7 +110,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
 
                 return req.CreateErrorResponse(HttpStatusCode.InternalServerError, msg, ex);
             }
-            
+
 
             var cmd = con.Connection.CreateCommand();
             cmd.CommandText = query;
@@ -216,7 +182,7 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
                 }
                 catch (Exception ex)
                 {
-                    log.Error(Request,"Query",ex);
+                    log.Error(Request, "Query", ex);
                     con.Connection.Dispose();//do not return to pool
                     throw;
                 }
@@ -230,11 +196,9 @@ namespace Microsoft.Samples.AzureAnalysisServices.Http.Controllers
 
             return resp;
 
-
-
         }
 
+   
 
-       
     }
 }
