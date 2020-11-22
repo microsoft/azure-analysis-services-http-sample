@@ -6,11 +6,51 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Samples.AzureAnalysisServices.Http
+namespace Microsoft.Samples.AzureAnalysisServices.Http.NetCore
 {
     internal class ConnectionPoolEntry
     {
-            
+        public static async Task<string> GetConnectionString(AuthData authData, string server, string database, string tenantId)
+        {
+            string constr;
+            if (authData.Scheme == AuthScheme.BASIC)
+            {
+                var parts = authData.UPN.Split('@');
+
+                if (Guid.TryParse(authData.UPN, out _)) //assume it's a clientId and password is a ClientSecret, and add the tenantId from web.config to fetch a token
+                {
+                    var token = await TokenHelper.GetBearerTokenAsync(authData.UPN, authData.PasswordOrToken, tenantId);
+                    constr = $"Data Source={server};Password={token};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
+                }
+                else
+                {
+                    //clientid@tenantid
+                    if (parts.Length == 2 && Guid.TryParse(parts[0], out _) && Guid.TryParse(parts[1], out _))
+                    {
+                        var token = await TokenHelper.GetBearerTokenAsync(parts[0], authData.PasswordOrToken, parts[1]);
+                        constr = $"Data Source={server};Password={token};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
+
+                    }
+                    else  //let adodb.net try to auth with th UPN/Password
+                    {
+                        constr = $"Data Source={server};User Id={authData.UPN};Password={authData.PasswordOrToken};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
+                    }
+
+                }
+
+            }
+            else if (authData.Scheme == AuthScheme.BEARER)
+            {
+                constr = $"Data Source={server};Password={authData.PasswordOrToken};Catalog={database};Persist Security Info=True; Impersonation Level=Impersonate";
+            }
+            else
+            {
+                throw new InvalidOperationException($"unexpected state authData.Scheme={authData.Scheme}");
+            }
+
+            return constr;
+        }
+
         public ConnectionPoolEntry(AdomdConnection con, string connectionString)
         {
             this.Connection = con;
