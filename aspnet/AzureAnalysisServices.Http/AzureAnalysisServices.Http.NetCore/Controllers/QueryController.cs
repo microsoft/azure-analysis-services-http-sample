@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AnalysisServices.AdomdClient;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,7 @@ using Microsoft.Samples.AzureAnalysisServices.Http.NetCore;
 namespace AzureAnalysisServices.Http.NetCore.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class QueryController : ControllerBase
     {
 
@@ -33,7 +34,6 @@ namespace AzureAnalysisServices.Http.NetCore.Controllers
         }
 
         [HttpGet]
-        [Route("api/Query")]
         public async Task<IActionResult> Get(
             [FromQuery]
             string query, 
@@ -47,10 +47,12 @@ namespace AzureAnalysisServices.Http.NetCore.Controllers
             return await GetQueryResult(query, gzip??false, cancel);
         }
 
+        
         [HttpPost]
-        [Route("api/Query")]
-        public async Task<IActionResult> Post([FromBody]string query, [FromQuery]bool? gzip, CancellationToken cancel)
+        public async Task<IActionResult> Post( [FromQuery]bool? gzip, CancellationToken cancel)
         {
+            var sr = new StreamReader(Request.Body);
+            string query = await sr.ReadToEndAsync();
 
             log.LogInformation("Begin Post Request");
             return await GetQueryResult(query, gzip??false, cancel);
@@ -62,9 +64,9 @@ namespace AzureAnalysisServices.Http.NetCore.Controllers
             
 
             var req = this.Request;
+
+            //Authenticate the request
             var authData = new AuthData(req);
-
-
             if (authData.Scheme == AuthScheme.NONE)
             {
 

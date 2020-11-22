@@ -107,6 +107,12 @@ namespace Tester
 
                     req.Headers.Add("Authorization", $"basic {auth}");
                 }
+
+                Console.WriteLine($"  HTTP Request Headers");
+                foreach (var h in req.Headers.AllKeys)
+                {
+                    Console.WriteLine($"  {h}: {req.Headers[h].Substring(0,50)}");
+                }
         
 
                 if (test.HttpMethod == "post")

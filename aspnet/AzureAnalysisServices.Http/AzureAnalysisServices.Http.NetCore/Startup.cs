@@ -48,7 +48,7 @@ namespace AzureAnalysisServices.Http.NetCore
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
