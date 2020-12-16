@@ -49,12 +49,38 @@ You can specify these setting through any configuration provider.  If you are co
 
 ```
 
-Once you've got the configuration set, just run the API project in your Development environment and test with the included Swagger UI.  A handy bit of DAX to know is the evaluate function: https://docs.microsoft.com/en-us/dax/evaluate-statement-dax, eg:
+Once you've got the configuration set, just run the API project in your Development environment and test with the included Swagger UI.  
+
+GET `/api/Tables` endpoint to list the tables in the database.  The response will look like:
+
+```
+[
+  {
+    "TABLE_NAME": "DimDate"
+  },
+  {
+    "TABLE_NAME": "DimProduct"
+  },
+  {
+    "TABLE_NAME": "DimProductCategory"
+  },
+  {
+    "TABLE_NAME": "DimProductSubcategory"
+  },
+  {
+    "TABLE_NAME": "FactInternetSales"
+  }
+]
+```
+
+GET the `/api/Tables/{tableName}` endpoint to dump the contents of a table.
+
+
+GET or POST the `/api/Query` endpoint to run an arbitrary DAX query.  A handy bit of DAX to know is the evaluate function: https://docs.microsoft.com/en-us/dax/evaluate-statement-dax, eg:
 
 `evaluate(DimProduct)`
 
-to query an entire table.
-
+to query an entire table. And instead of writing DAX by hand, you use the Perofrmance Analyzer in Power BI desktop to see the DAX queries sent by a Power BI report. https://docs.microsoft.com/en-us/power-bi/create-reports/desktop-performance-analyzer
 
 
 
