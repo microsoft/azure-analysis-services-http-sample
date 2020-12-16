@@ -1,16 +1,16 @@
 
-This sample is a HTTP proxy for XML/A endpoints, intended for use with Power BI Premium or Azure Analysis Services.
+This sample is a HTTP proxy for XMLA endpoints, intended for use with Power BI Premium or Azure Analysis Services.
 
 It's implemented as ASP.NET Core 5 API Project. The main API is `/api/Query` which allows you to POST a DAX query and recieve the results as a JSON result.
 
-The sample is coded to pass-through authentication from the client to the XML/A endpoint.  So to call the API either use HTTP BASIC auth over HTTPS, passing credentials with the request.  It's highly advised that this be a Service Principal, rather than an AAD user.  To specify a Service Principal use a UserName of the form `app:ClientID@TenantID`, and pass a Client Secret as the Password.
+The sample is coded to pass-through authentication from the client to the XMLA endpoint.  So to call the API either use HTTP BASIC auth over HTTPS, passing credentials with the request.  It's highly advised that this be a Service Principal, rather than an AAD user.  To specify a Service Principal use a UserName of the form `app:ClientID@TenantID`, and pass a Client Secret as the Password.
 
-For better security, instead of passing a UserName/Password using HTTP BASIC auth, fetch a Bearer token for your XML/A endpoint.  To fetch a token use the Resource ID `https://analysis.windows.net/powerbi/api` for Power BI, or `https://*.asazure.windows.net` for Azure Analysis Services
+For better security, instead of passing a UserName/Password using HTTP BASIC auth, fetch a Bearer token for your XMLA endpoint.  To fetch a token use the Resource ID `https://analysis.windows.net/powerbi/api` for Power BI, or `https://*.asazure.windows.net` for Azure Analysis Services
 
 # Configuration
 To get started modify the configuration settings to set 
 
-**Server**: this can be the XML/A endpoint of an Azure Analysis Services Server, 
+**Server**: this can be the XMLA endpoint of an Azure Analysis Services Server, 
 
 `asazure://[region name].asazure.windows.net/[AAS Server Name]`
 
@@ -41,7 +41,15 @@ You can specify these setting through any configuration provider.  If you are co
             "Default": "Information",
             "Microsoft": "Warning",
             "Microsoft.Hosting.Lifetime": "Information",
-            "Microsoft.Samples.XMLA.HTTP.Proxy.Controllers.QueryController":  "Information"
+            "Microsoft.Samples.
+            
+            
+            
+            
+            
+            
+            
+            A.HTTP.Proxy.Controllers.QueryController":  "Information"
         }
     },
     "AllowedHosts": "*"
