@@ -11,6 +11,7 @@
     <RepositoryUrl>https://github.com/microsoft/azure-analysis-services-http-sample</RepositoryUrl>
     <AssemblyName>Microsoft.Samples.XMLA.HTTP.Proxy</AssemblyName>
     <RootNamespace>Microsoft.Samples.XMLA.HTTP.Proxy</RootNamespace>
+    <UserSecretsId>331bc360-700f-4338-97cf-caa996af04bc</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
