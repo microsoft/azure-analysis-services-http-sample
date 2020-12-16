@@ -41,15 +41,7 @@ You can specify these setting through any configuration provider.  If you are co
             "Default": "Information",
             "Microsoft": "Warning",
             "Microsoft.Hosting.Lifetime": "Information",
-            "Microsoft.Samples.
-            
-            
-            
-            
-            
-            
-            
-            A.HTTP.Proxy.Controllers.QueryController":  "Information"
+            "Microsoft.Samples.XMLA.HTTP.Proxy.Controllers.QueryController":  "Information"
         }
     },
     "AllowedHosts": "*"
