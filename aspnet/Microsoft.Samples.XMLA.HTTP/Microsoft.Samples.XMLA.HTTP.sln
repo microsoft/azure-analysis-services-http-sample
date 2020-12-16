@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{F4791934-9B5E-4A82-B02E-3CE657393209}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Samples.XMLA.HTTP.Proxy", "Microsoft.Samples.XMLA.HTTP.Proxy\Microsoft.Samples.XMLA.HTTP.Proxy.csproj", "{B2B5296F-0C70-4435-90F5-BC5E6BD3A685}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4791934-9B5E-4A82-B02E-3CE657393209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4791934-9B5E-4A82-B02E-3CE657393209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4791934-9B5E-4A82-B02E-3CE657393209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4791934-9B5E-4A82-B02E-3CE657393209}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2B5296F-0C70-4435-90F5-BC5E6BD3A685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2B5296F-0C70-4435-90F5-BC5E6BD3A685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2B5296F-0C70-4435-90F5-BC5E6BD3A685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2B5296F-0C70-4435-90F5-BC5E6BD3A685}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B14811B3-E469-4DF1-8841-37D5C52DD297}
+	EndGlobalSection
+EndGlobal

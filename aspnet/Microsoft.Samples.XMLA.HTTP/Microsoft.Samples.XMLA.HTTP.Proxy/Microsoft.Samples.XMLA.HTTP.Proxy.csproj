@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageId>Microsoft.Samples.XMLA.HTTP.Proxy</PackageId>
+    <Authors>David Browne</Authors>
+    <Company>Microsoft</Company>
+    <Product>Microsoft.Samples.XMLA.HTTP.Proxy</Product>
+    <Copyright>Microsoft 2020</Copyright>
+    <PackageProjectUrl>https://github.com/microsoft/azure-analysis-services-http-sample</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/microsoft/azure-analysis-services-http-sample</RepositoryUrl>
+    <AssemblyName>Microsoft.Samples.XMLA.HTTP.Proxy</AssemblyName>
+    <RootNamespace>Microsoft.Samples.XMLA.HTTP.Proxy</RootNamespace>
+    <UserSecretsId>331bc360-700f-4338-97cf-caa996af04bc</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AnalysisServices.AdomdClient.NetCore.retail.amd64" Version="19.14.0-Preview" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.1" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.1" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+</Project>
