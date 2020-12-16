@@ -49,6 +49,14 @@ You can specify these setting through any configuration provider.  If you are co
 
 ```
 
+Once you've got the configuration set, just run the API project in your Development environment and test with the included Swagger UI.  A handy bit of DAX to know is the evaluate function: https://docs.microsoft.com/en-us/dax/evaluate-statement-dax, eg:
+
+`evaluate(DimProduct)`
+
+to query an entire table.
+
+
+
 
 # Contributing
 
