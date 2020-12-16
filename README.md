@@ -3,7 +3,7 @@ This sample is a HTTP proxy for XML/A endpoints, intended for use with Power BI 
 
 It's implemented as ASP.NET Core 5 API Project. The main API is `/api/Query` which allows you to POST a DAX query and recieve the results as a JSON result.
 
-The sample is coded to pass-through authentication from the client to the XML/A endpoint.  So to call the API either use HTTP BASIC auth over HTTPS, passing credentials with the request.  It's highly advised that this be a Service Principal, rather than an AAD user.  To specify a Service Principal use a UserName of the form `app:ClientID@TenantID`, and pass a User Secret as the Password.
+The sample is coded to pass-through authentication from the client to the XML/A endpoint.  So to call the API either use HTTP BASIC auth over HTTPS, passing credentials with the request.  It's highly advised that this be a Service Principal, rather than an AAD user.  To specify a Service Principal use a UserName of the form `app:ClientID@TenantID`, and pass a Client Secret as the Password.
 
 For better security, instead of passing a UserName/Password using HTTP BASIC auth, fetch a Bearer token for your XML/A endpoint.  To fetch a token use the Resource ID `https://analysis.windows.net/powerbi/api` for Power BI, or `https://*.asazure.windows.net` for Azure Analysis Services
 
@@ -76,7 +76,7 @@ GET `/api/Tables` endpoint to list the tables in the database.  The response wil
 GET the `/api/Tables/{tableName}` endpoint to dump the contents of a table.
 
 
-GET or POST the `/api/Query` endpoint to run an arbitrary DAX query.  A handy bit of DAX to know is the evaluate function: https://docs.microsoft.com/en-us/dax/evaluate-statement-dax, eg:
+GET or POST the `/api/Query` endpoint to run an arbitrary DAX query.  A handy bit of DAX to know is the evaluate statement: https://docs.microsoft.com/en-us/dax/evaluate-statement-dax, eg:
 
 `evaluate(DimProduct)`
 
