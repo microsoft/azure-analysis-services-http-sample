@@ -1,4 +1,9 @@
 
+This sample is a HTTP proxy for XML/A endpoints, intended for use with Power BI Premium or Azure Analysis Services.
+
+It's implemented as ASP.NET Core 5 API Project. The main API is `/api/Query` which allows you to POST a DAX query and recieve the results as a JSON result.
+
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
