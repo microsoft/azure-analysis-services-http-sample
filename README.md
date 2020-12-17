@@ -28,7 +28,7 @@ If you specify an Analysis Services Server the API will attempt to connect using
 
 **TenantId**  this is the tenantID to perform authentication against in Auth scenarios where the user hasn't passed a Bearer token or a Service Principal with the TenantID specified.
 
-You can specify these setting through any configuration provider.  If you are considering committing your code back to a GitHub public repository, you should specify these in a local secrets store, per https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-5.0&tabs=windows, or in a git-ignored settings file.
+You can specify these setting through any [configuration provider](https://docs.microsoft.com/en-us/dotnet/core/extensions/configuration-providers).  If you are considering committing your code back to a GitHub public repository, you should specify these in a local secrets store, per https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-5.0&tabs=windows, or in a git-ignored settings file.
 
 **Example appsettings.json**
 ```
