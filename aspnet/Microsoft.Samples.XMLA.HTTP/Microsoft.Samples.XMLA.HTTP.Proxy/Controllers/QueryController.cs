@@ -47,6 +47,9 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
         }
 
         [HttpGet("/api/Tables")]
+        public async Task<IActionResult> GetTables(
+            CancellationToken cancel) => await GetTables(config.DefaultDatabase, cancel);
+
         [HttpGet("/api/{database}/Tables")]
         public async Task<IActionResult> GetTables(
             [FromRoute] string database, 
@@ -56,10 +59,32 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             from $SYSTEM.DBSCHEMA_TABLES
             where TABLE_SCHEMA <> '$SYSTEM'";
             log.LogInformation("Begin Get Request");
-            return await GetQueryResult(database ?? config.DefaultDatabase,query, false, cancel);
+            return await GetQueryResult(database, query, false, cancel);
+        }
+
+        [HttpGet("/api/Tables/{table}")]
+        public async Task<IActionResult> GetTable(
+            [FromRoute] string table,
+            CancellationToken cancel) => await GetTable(config.DefaultDatabase, table, cancel);
+
+        [HttpGet("/api/{database}/Tables/{table}")]
+        public async Task<IActionResult> GetTable(
+            [FromRoute] string database, 
+            [FromRoute]string table, 
+            CancellationToken cancel)
+        {
+            var query = $"evaluate({QuoteName(table)})";
+            log.LogInformation("Begin Get Request");
+            return await GetQueryResult(database ?? config.DefaultDatabase, query, false, cancel);
         }
 
         [HttpGet("/api/Query")]
+        public async Task<IActionResult> Get(
+            [FromQuery] string query,
+            [FromQuery] bool? gzip,
+            CancellationToken cancel) => await Get(config.DefaultDatabase, query, gzip, cancel);
+            
+
         [HttpGet("/api/{database}/Query")]
         public async Task<IActionResult> Get(
             [FromRoute]string database,
@@ -69,11 +94,18 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
         {
 
             log.LogInformation("Begin Get Request");
+            return await GetQueryResult(database, query, gzip??false, cancel);
+        }
+
+
+        [HttpPost("/api/Query")]
+        public async Task<IActionResult> Post(
+            [FromQuery] bool? gzip,
+            CancellationToken cancel) => await Post(config.DefaultDatabase, gzip, cancel);
+
             return await GetQueryResult(database ?? config.DefaultDatabase,query, gzip??false, cancel);
         }
 
-        
-        [HttpPost("/api/Query")]
         [HttpPost("/api/{database}/Query")]
         public async Task<IActionResult> Post(
             [FromRoute]string database, 
@@ -84,7 +116,8 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             string query = await sr.ReadToEndAsync();
 
             log.LogInformation("Begin Post Request");
-            return await GetQueryResult(database ?? config.DefaultDatabase,query, gzip??false, cancel);
+            return await GetQueryResult(database, query, gzip??false, cancel);
+
         }
 
         [NonAction]
@@ -179,5 +212,27 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
 
             
         }
+
+        static string QuoteName(string identifier)
+        {
+            var sb = new System.Text.StringBuilder(identifier.Length + 3, 1024);
+            sb.Append('[');
+            foreach (var c in identifier)
+            {
+                if (c == ']')
+                {
+                    sb.Append("]]");
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+            sb.Append(']');
+            return sb.ToString();
+
+        }
+
+
     }
 }
