@@ -73,7 +73,7 @@ GET `/api/Tables` or `/api/{database}/Tables` endpoint to list the tables in the
 ]
 ```
 
-GET the `/api/Tables/{tableName}` endpoint to dump the contents of a table.
+GET the `/api/Tables/{tableName}` or `/api/{database}/Tables/{tableName}`  endpoint to dump the contents of a table.
 
 
 GET or POST the `/api/Query` of `/api/{database}/Query` endpoint to run an arbitrary DAX query.  A handy bit of DAX to know is the evaluate statement: https://docs.microsoft.com/en-us/dax/evaluate-statement-dax, eg:
