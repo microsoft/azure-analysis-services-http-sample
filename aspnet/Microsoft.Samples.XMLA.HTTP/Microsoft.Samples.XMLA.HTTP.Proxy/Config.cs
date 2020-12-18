@@ -12,14 +12,14 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
         public Config(IConfiguration configSrc, ILogger<Config> logger)
         {
             this.Server = configSrc.GetValue<string>("Server");
-            this.Database = configSrc.GetValue<string>("Database");
+            this.DefaultDatabase = configSrc.GetValue<string>("DefaultDatabase");
             this.TenantId = configSrc.GetValue<string>("TenantId");
 
             if (string.IsNullOrEmpty(Server))
             {
                 throw new InvalidOperationException("Required Config value Server is missing.");
             }
-            if (string.IsNullOrEmpty(Database))
+            if (string.IsNullOrEmpty(DefaultDatabase))
             {
                 throw new InvalidOperationException("Required AppSettings Database is missing.");
             }
@@ -54,7 +54,7 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
 
         public bool IsSSAS { get; }
         public string Server { get; }
-        public string Database { get; }
+        public string DefaultDatabase { get; }
         public string TenantId { get; }
         public string ResourceId { get; }
 

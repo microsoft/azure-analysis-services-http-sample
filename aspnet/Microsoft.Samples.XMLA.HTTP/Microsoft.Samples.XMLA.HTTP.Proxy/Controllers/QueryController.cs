@@ -37,53 +37,63 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             this.tokenHelper = tokenHelper;
         }
 
+
+        [HttpGet("/api/Databases")]
+        public async Task<IActionResult> GetDatabases(CancellationToken cancel)
+        {
+            var query = @"select [CATALOG_NAME] from $SYSTEM.DBSCHEMA_CATALOGS";
+            log.LogInformation("Begin Get Request");
+            return await GetQueryResult(config.DefaultDatabase, query, false, cancel); //always run at default database
+        }
+
         [HttpGet("/api/Tables")]
-        public async Task<IActionResult> GetTables(CancellationToken cancel)
+        [HttpGet("/api/{database}/Tables")]
+        public async Task<IActionResult> GetTables(
+            [FromRoute] string database, 
+            CancellationToken cancel)
         {
             var query = @"select TABLE_NAME 
             from $SYSTEM.DBSCHEMA_TABLES
             where TABLE_SCHEMA <> '$SYSTEM'";
             log.LogInformation("Begin Get Request");
-            return await GetQueryResult(query, false, cancel);
+            return await GetQueryResult(database ?? config.DefaultDatabase,query, false, cancel);
         }
 
-        [HttpGet("/api/Tables/{table}")]
-        public async Task<IActionResult> GetTables(string table, CancellationToken cancel)
-        {
-            var query = $"evaluate({table})";
-            log.LogInformation("Begin Get Request");
-            return await GetQueryResult(query, false, cancel);
-        }
-
-        [HttpGet]
+        [HttpGet("/api/Query")]
+        [HttpGet("/api/{database}/Query")]
         public async Task<IActionResult> Get(
-            [FromQuery]
-            string query, 
-            
+            [FromRoute]string database,
+            [FromQuery]string query, 
             [FromQuery]bool? gzip, 
-            
             CancellationToken cancel)
         {
 
             log.LogInformation("Begin Get Request");
-            return await GetQueryResult(query, gzip??false, cancel);
+            return await GetQueryResult(database ?? config.DefaultDatabase,query, gzip??false, cancel);
         }
 
         
-        [HttpPost]
-        public async Task<IActionResult> Post( [FromQuery]bool? gzip, CancellationToken cancel)
+        [HttpPost("/api/Query")]
+        [HttpPost("/api/{database}/Query")]
+        public async Task<IActionResult> Post(
+            [FromRoute]string database, 
+            [FromQuery]bool? gzip, 
+            CancellationToken cancel)
         {
             var sr = new StreamReader(Request.Body);
             string query = await sr.ReadToEndAsync();
 
             log.LogInformation("Begin Post Request");
-            return await GetQueryResult(query, gzip??false, cancel);
+            return await GetQueryResult(database ?? config.DefaultDatabase,query, gzip??false, cancel);
         }
 
         [NonAction]
-        private async Task<IActionResult> GetQueryResult(string query, bool gzip, CancellationToken cancel)
+        private async Task<IActionResult> GetQueryResult(string database, string query, bool gzip, CancellationToken cancel)
         {
-            
+            if (string.IsNullOrEmpty(database))
+            {
+                throw new ArgumentException("Database not specified in route and no default database configured");
+            }
 
             var req = this.Request;
 
@@ -112,7 +122,6 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             }
 
             var server = config.Server;
-            var database = config.Database;
             var tenantId = config.TenantId;
 
             string constr = await tokenHelper.GetConnectionString(authData, server, database, tenantId);
