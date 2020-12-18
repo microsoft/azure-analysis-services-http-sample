@@ -83,6 +83,7 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             [FromQuery] string query,
             [FromQuery] bool? gzip,
             CancellationToken cancel) => await Get(config.DefaultDatabase, query, gzip, cancel);
+            
 
         [HttpGet("/api/{database}/Query")]
         public async Task<IActionResult> Get(
@@ -102,6 +103,9 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             [FromQuery] bool? gzip,
             CancellationToken cancel) => await Post(config.DefaultDatabase, gzip, cancel);
 
+            return await GetQueryResult(database ?? config.DefaultDatabase,query, gzip??false, cancel);
+        }
+
         [HttpPost("/api/{database}/Query")]
         public async Task<IActionResult> Post(
             [FromRoute]string database, 
@@ -113,6 +117,7 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
 
             log.LogInformation("Begin Post Request");
             return await GetQueryResult(database, query, gzip??false, cancel);
+
         }
 
         [NonAction]
@@ -207,6 +212,7 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
 
             
         }
+
         static string QuoteName(string identifier)
         {
             var sb = new System.Text.StringBuilder(identifier.Length + 3, 1024);
@@ -226,5 +232,7 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             return sb.ToString();
 
         }
+
+
     }
 }
