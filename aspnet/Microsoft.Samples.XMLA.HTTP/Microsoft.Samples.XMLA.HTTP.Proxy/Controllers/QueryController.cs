@@ -103,8 +103,6 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             [FromQuery] bool? gzip,
             CancellationToken cancel) => await Post(config.DefaultDatabase, gzip, cancel);
 
-            return await GetQueryResult(database ?? config.DefaultDatabase,query, gzip??false, cancel);
-        }
 
         [HttpPost("/api/{database}/Query")]
         public async Task<IActionResult> Post(
@@ -216,19 +214,19 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
         static string QuoteName(string identifier)
         {
             var sb = new System.Text.StringBuilder(identifier.Length + 3, 1024);
-            sb.Append('[');
+            sb.Append('\'');
             foreach (var c in identifier)
             {
-                if (c == ']')
+                if (c == '\'')
                 {
-                    sb.Append("]]");
+                    sb.Append("''");
                 }
                 else
                 {
                     sb.Append(c);
                 }
             }
-            sb.Append(']');
+            sb.Append('\'');
             return sb.ToString();
 
         }
