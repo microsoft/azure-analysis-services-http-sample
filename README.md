@@ -24,7 +24,7 @@ Or for local testing you can use an Analysis Services Server
 
 If you specify an Analysis Services Server the API will attempt to connect using Windows Integrated Authentication, instead of using passthrough Auth.  This is handy for testing of the endpont itself, but is not intended for production deployment.
 
-**Database**  this is the database name
+**DefaultDatabase**  this is the default databae to use. If the user doesn't specify a database in the route, this database will be used.  And queries to the `/api/Databases` endpoint will use this database too.  To specify a non-default database, use the `/api/{database}/Query` or `/api/{database}/Tables` endpoints.
 
 **TenantId**  this is the tenantID to perform authentication against in Auth scenarios where the user hasn't passed a Bearer token or a Service Principal with the TenantID specified.
 
@@ -34,7 +34,7 @@ You can specify these setting through any [configuration provider](https://docs.
 ```
 {
     "Server": "powerbi://api.powerbi.com/v1.0/myorg/[Workspace Name]",
-    "Database": "[Your AAS Database or Power BI Data Set Name]",
+    "DefaultDatabase": "[Your AAS Database or Power BI Data Set Name]",
     "TenantId": "[Your Tenant ID]",
     "Logging": {
         "LogLevel": {
@@ -51,7 +51,7 @@ You can specify these setting through any [configuration provider](https://docs.
 
 Once you've got the configuration set, just run the API project in your Development environment and test with the included Swagger UI.  
 
-GET `/api/Tables` endpoint to list the tables in the database.  The response will look like:
+GET `/api/Tables` or `/api/{database}/Tables` endpoint to list the tables in the database.  The response will look like:
 
 ```
 [
@@ -76,7 +76,7 @@ GET `/api/Tables` endpoint to list the tables in the database.  The response wil
 GET the `/api/Tables/{tableName}` endpoint to dump the contents of a table.
 
 
-GET or POST the `/api/Query` endpoint to run an arbitrary DAX query.  A handy bit of DAX to know is the evaluate statement: https://docs.microsoft.com/en-us/dax/evaluate-statement-dax, eg:
+GET or POST the `/api/Query` of `/api/{database}/Query` endpoint to run an arbitrary DAX query.  A handy bit of DAX to know is the evaluate statement: https://docs.microsoft.com/en-us/dax/evaluate-statement-dax, eg:
 
 `evaluate(DimProduct)`
 
