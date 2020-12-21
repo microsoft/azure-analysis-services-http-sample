@@ -93,7 +93,7 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
                     //if we discover that the entry has expired, dispose of it
                     //this typically happens when the entry uses BEARER auth and its token
                     //has expired (or is about to).
-                    if (entry.ValidTo > DateTime.Now.Subtract(TimeSpan.FromMinutes(1)))
+                    if ( DateTime.Now > entry.ValidTo.Subtract(TimeSpan.FromMinutes(1)) )
                     {
                         entry.Connection.Dispose();
                         continue;
@@ -121,9 +121,6 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
                 rv.ValidTo = validTo;
 
                 con.Open();
-
-                
-  
 
             }
 
