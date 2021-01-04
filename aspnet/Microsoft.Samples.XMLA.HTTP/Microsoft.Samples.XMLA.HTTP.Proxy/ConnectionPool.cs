@@ -33,8 +33,10 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
         
         public bool IsDisposed { get; private set; } = false;
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public string ConnectionString { get; private set; }
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public AdomdConnection Connection { get; private set; }
 
         public DateTime ValidTo { get; set; }
@@ -45,18 +47,28 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
             TotalCheckoutTime += DateTime.Now.Subtract(LastCheckedOut);
             LastCheckedIn = DateTime.Now;
 
+
         }
 
         public void RecordCheckOut()
         {
             IsCheckedOut = true;
             LastCheckedOut = DateTime.Now;
+            TimesCheckedOut += 1;
         }
         public bool IsCheckedOut { get; private set; }
-        public int TimesCheckedOut { get; private set; }
+        public int TimesCheckedOut { get; private set; } = 0;
+
+        [System.Text.Json.Serialization.JsonIgnore]
         public TimeSpan TotalCheckoutTime { get; private set; }
         public DateTime LastCheckedOut { get; private set; } = DateTime.MinValue;
         public DateTime LastCheckedIn { get; private set; } = DateTime.MinValue;
+        public DateTime CreatedAt { get; private set; } = DateTime.Now;
+
+        public override string ToString()
+        {
+            return System.Text.Json.JsonSerializer.Serialize(this);
+        }
     }
 
     //This is a simple Connection Pool, made simple because the client 

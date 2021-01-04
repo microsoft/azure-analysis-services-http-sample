@@ -196,6 +196,7 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
 
             object queryResults;
 
+
             try
             {
                 cmd.CommandTimeout = 2 * 60;
@@ -210,6 +211,8 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
             }
             catch (Exception ex)
             {
+                log.LogError($"Query Execution Error Connection Pool Entry {con}: Exception {ex}");
+                
                 return Problem(ex.Message);
             }
 
