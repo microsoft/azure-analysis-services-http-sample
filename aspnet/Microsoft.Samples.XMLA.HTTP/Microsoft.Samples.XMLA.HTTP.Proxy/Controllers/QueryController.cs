@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AnalysisServices.AdomdClient;
@@ -170,7 +171,22 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy.Controllers
                 }
                 var msg = ex.Message;
 
-                log.LogError($"Failed to get ADODB connection for connection string: {msg}: {constr}");
+                var cs = constr.Split(";");
+                var sb = new StringBuilder();
+                foreach (var c in cs)
+                {
+                    if (c.Trim().StartsWith("password", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        sb.Append("password=********").Append(";");
+                    }
+                    else
+                    {
+                        sb.Append(c).Append(";");
+                    }
+                }
+
+
+                log.LogError($"Failed to get ADODB connection for connection string: {msg}: {sb.ToString()}");
                 return this.Problem("Failed to get ADODB connection for connection string.  See server log for details.");
                 
             }
