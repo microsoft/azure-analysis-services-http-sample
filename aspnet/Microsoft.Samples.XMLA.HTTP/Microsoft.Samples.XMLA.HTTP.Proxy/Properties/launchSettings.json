@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Microsoft.Samples.XMLA.HTTP.Proxy": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": ""
+    }
+  }
+}
