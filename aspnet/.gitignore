@@ -23,7 +23,7 @@ bld/
 [Ll]og/
 
 # Deployment Artifacts
-#[Pp]roperties
+[Pp]roperties
 
 # Visual Studio 2015 cache/options directory
 .vs/
