@@ -85,10 +85,6 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
                 con.Connection.Dispose(); //do not return to pool
                 throw;  //too late to send error to client  
             }
-            finally
-            {
-                await encodingStream.DisposeAsync();
-            }
 
         }
 
@@ -132,7 +128,7 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
                     }
                     await w.WriteEndObjectAsync(cancel);
 
-                    if (rows % 1000 == 0)
+                    if (rows % 50000 == 0)
                     {
                         log.LogInformation($"Wrote {rows} rows to output stream.");
                     }
