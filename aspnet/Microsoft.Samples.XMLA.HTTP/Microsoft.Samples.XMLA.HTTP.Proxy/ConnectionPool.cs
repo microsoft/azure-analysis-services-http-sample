@@ -112,11 +112,14 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
                 var con = new AdomdConnection(connectionString);
                 rv = new ConnectionPoolEntry(con, connectionString);
 
-                var validTo = DateTime.Now.AddHours(1); //default
+                var validTo = DateTime.Now.AddMinutes(5); //default
                 if (authData.Scheme ==  AuthScheme.BEARER)
                 {
                     var token = tokenHelper.ReadToken(authData.PasswordOrToken);
-                    validTo = token.ValidTo.ToLocalTime();
+                    if (validTo > token.ValidTo.ToLocalTime())
+                    {
+                        validTo = token.ValidTo.ToLocalTime();
+                    }
                 }
                 rv.ValidTo = validTo;
 
