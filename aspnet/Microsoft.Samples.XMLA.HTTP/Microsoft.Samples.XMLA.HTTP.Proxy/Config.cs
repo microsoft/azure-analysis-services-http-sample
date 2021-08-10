@@ -31,11 +31,11 @@ namespace Microsoft.Samples.XMLA.HTTP.Proxy
             if (Uri.TryCreate(Server, UriKind.Absolute, out Uri serverUri))
             {
 
-                if (serverUri.Scheme == "asazure")
+                if (serverUri.Scheme == "powerbi")
                 {
                     ResourceId = "https://analysis.windows.net/powerbi/api";
                 }
-                else if (serverUri.Scheme == "powerbi")
+                else if (serverUri.Scheme == "asazure")
                 {
                     ResourceId = "https://*.asazure.windows.net";
                 }
