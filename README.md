@@ -1,6 +1,8 @@
 
 This sample is a HTTP proxy for XMLA endpoints, intended for use with Power BI Premium or Azure Analysis Services.
 
+NB: Power BI now supports a REST API for sending queries to DataSets, which can be used without having to deploy an additional endpoint. See https://powerbi.microsoft.com/en-us/blog/announcing-the-public-preview-of-power-bi-rest-api-support-for-dax-queries/
+
 It's implemented as ASP.NET Core 5 API Project. The main API is `/api/Query` which allows you to POST a DAX query and receive the results as a JSON result.
 
 The sample is coded to pass-through authentication from the client to the XMLA endpoint.  So to call the API either use HTTP BASIC auth over HTTPS, passing credentials with the request.  It's highly advised that this be a Service Principal, rather than an AAD user.  To specify a Service Principal use a UserName of the form `app:[ClientID]@[TenantID]`, and pass a Client Secret as the Password.
